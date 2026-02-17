@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const languageRoutes = require("./routes/languageRoutes");
+const lessonRoutes = require("./routes/lessonRoutes");
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/languages", languageRoutes);
+app.use("/api/lessons", lessonRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
