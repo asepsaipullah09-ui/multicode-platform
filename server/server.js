@@ -4,6 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
+const languageRoutes = require("./routes/languageRoutes");
 
 const app = express();
 
@@ -11,6 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/languages", languageRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

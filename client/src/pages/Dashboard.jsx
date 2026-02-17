@@ -1,42 +1,35 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-const Dashboard = () => {
-  const navigate = useNavigate();
+function Dashboard() {
+  const [languages, setLanguages] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const fetchLanguages = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/languages");
+        setLanguages(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    if (!token) {
-      navigate("/login");
-    }
-  }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+    fetchLanguages();
+  }, []);
 
   return (
     <div style={{ padding: "40px" }}>
       <h1>Dashboard</h1>
-      <p>Selamat datang, kamu sudah login 🎉</p>
+      <h2>Daftar Bahasa Pemrograman</h2>
 
-      <button
-        onClick={handleLogout}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          backgroundColor: "red",
-          color: "white",
-          border: "none",
-          cursor: "pointer"
-        }}
-      >
-        Logout
-      </button>
+      {languages.map((lang) => (
+        <div key={lang._id} style={{ marginBottom: "20px" }}>
+          <h3>{lang.name}</h3>
+          <p>{lang.description}</p>
+        </div>
+      ))}
     </div>
   );
-};
+}
 
 export default Dashboard;
