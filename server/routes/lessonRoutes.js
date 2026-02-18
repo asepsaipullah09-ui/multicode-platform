@@ -31,4 +31,14 @@ router.post("/", async (req, res) => {
   }
 });
 
+// ✅ GET single lesson by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const lesson = await Lesson.findById(req.params.id);
+    res.json(lesson);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

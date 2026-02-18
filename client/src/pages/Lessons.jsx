@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Lessons() {
   const { languageId } = useParams();
+  const navigate = useNavigate();
   const [lessons, setLessons] = useState([]);
 
   useEffect(() => {
@@ -26,9 +27,17 @@ function Lessons() {
       <h1>Daftar Materi</h1>
 
       {lessons.map((lesson) => (
-        <div key={lesson._id} style={{ marginBottom: "20px" }}>
+        <div
+          key={lesson._id}
+          style={{
+            marginBottom: "20px",
+            cursor: "pointer",
+            border: "1px solid gray",
+            padding: "10px",
+          }}
+          onClick={() => navigate(`/lesson/${lesson._id}`)}
+        >
           <h3>{lesson.title}</h3>
-          <p>{lesson.content}</p>
         </div>
       ))}
     </div>
