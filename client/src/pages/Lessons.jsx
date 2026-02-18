@@ -23,23 +23,20 @@ function Lessons() {
   }, [languageId]);
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Daftar Materi</h1>
+    <div className="min-h-screen bg-gray-100 p-10">
+      <h1 className="text-3xl font-bold mb-8">Daftar Materi</h1>
 
-      {lessons.map((lesson) => (
-        <div
-          key={lesson._id}
-          style={{
-            marginBottom: "20px",
-            cursor: "pointer",
-            border: "1px solid gray",
-            padding: "10px",
-          }}
-          onClick={() => navigate(`/lesson/${lesson._id}`)}
-        >
-          <h3>{lesson.title}</h3>
-        </div>
-      ))}
+      <div className="space-y-4">
+        {lessons.map((lesson) => (
+          <div
+            key={lesson._id}
+            onClick={() => navigate(`/lesson/${lesson._id}`)}
+            className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition cursor-pointer"
+          >
+            <h3 className="text-lg font-semibold">{lesson.title}</h3>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
