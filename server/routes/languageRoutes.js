@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Language = require("../models/Language");
+const protect = require("../middleware/authMiddleware");
+const adminOnly = require("../middleware/adminMiddleware");
 
 // GET all languages
 router.get("/", async (req, res) => {
@@ -12,8 +14,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST language (sementara bebas dulu)
-router.post("/", async (req, res) => {
+// POST language (admin only)
+router.post("/", protect, adminOnly, async (req, res) => {
   try {
     const language = new Language({
       name: req.body.name,

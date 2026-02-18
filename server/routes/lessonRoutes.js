@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Lesson = require("../models/Lesson");
+const protect = require("../middleware/authMiddleware");
+const adminOnly = require("../middleware/adminMiddleware");
 
 // ✅ GET lesson berdasarkan language
 router.get("/language/:languageId", async (req, res) => {
@@ -16,7 +18,7 @@ router.get("/language/:languageId", async (req, res) => {
 });
 
 // ✅ POST lesson
-router.post("/", async (req, res) => {
+router.post("/", protect, adminOnly, async (req, res) => {
   try {
     const lesson = new Lesson({
       title: req.body.title,
