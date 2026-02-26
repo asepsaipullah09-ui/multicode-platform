@@ -7,7 +7,20 @@ function Dashboard() {
   const [user, setUser] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newLanguage, setNewLanguage] = useState({ name: "", description: "" });
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("theme") === "dark"
+  );
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -43,24 +56,34 @@ function Dashboard() {
   const isAdmin = user?.role === "ADMIN";
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-10 transition-colors duration-300">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        {isAdmin && (
+        <h1 className="text-3xl font-bold dark:text-white">Dashboard</h1>
+        
+        <div className="flex gap-2">
           <button
-            onClick={() => setShowAddForm(true)}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            onClick={() => setDarkMode(!darkMode)}
+            className="px-4 py-2 rounded-xl bg-gray-200 dark:bg-gray-700 dark:text-white transition"
           >
-            + Tambah Language
+            {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
           </button>
-        )}
+          
+          {isAdmin && (
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            >
+              + Tambah Language
+            </button>
+          )}
+        </div>
       </div>
 
-      <p className="text-gray-600 mb-4">
+      <p className="text-gray-600 dark:text-gray-300 mb-4">
         Logged in as: <strong>{user?.name}</strong> ({user?.role})
       </p>
 
-      <h2 className="text-xl font-semibold mb-6">
+      <h2 className="text-xl font-semibold mb-6 dark:text-white">
         Daftar Bahasa Pemrograman
       </h2>
 
@@ -68,13 +91,13 @@ function Dashboard() {
         {languages.map((lang) => (
           <div
             key={lang.id}
-            className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
           >
-            <h2 className="text-xl font-semibold mb-2 text-gray-800">
+            <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
               {lang.name}
             </h2>
 
-            <p className="text-gray-600 text-sm mb-4">
+            <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
               {lang.description}
             </p>
 
@@ -91,22 +114,22 @@ function Dashboard() {
       {/* Add Language Modal */}
       {showAddForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-96">
-            <h3 className="text-xl font-bold mb-4">Tambah Language</h3>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-96">
+            <h3 className="text-xl font-bold mb-4 dark:text-white">Tambah Language</h3>
             <form onSubmit={handleAddLanguage}>
               <input
                 type="text"
                 placeholder="Nama Language"
                 value={newLanguage.name}
                 onChange={(e) => setNewLanguage({ ...newLanguage, name: e.target.value })}
-                className="w-full mb-3 p-2 border rounded"
+                className="w-full mb-3 p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
                 required
               />
               <textarea
                 placeholder="Description"
                 value={newLanguage.description}
                 onChange={(e) => setNewLanguage({ ...newLanguage, description: e.target.value })}
-                className="w-full mb-3 p-2 border rounded"
+                className="w-full mb-3 p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
               />
               <div className="flex gap-2">
                 <button
