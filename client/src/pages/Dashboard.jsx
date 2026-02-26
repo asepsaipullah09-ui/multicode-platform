@@ -64,15 +64,26 @@ function Dashboard() {
         Daftar Bahasa Pemrograman
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
         {languages.map((lang) => (
           <div
             key={lang.id}
-            onClick={() => navigate(`/lessons/${lang.id}`)}
-            className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition cursor-pointer"
+            className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
           >
-            <h3 className="text-lg font-bold mb-2">{lang.name}</h3>
-            <p className="text-gray-600">{lang.description}</p>
+            <h2 className="text-xl font-semibold mb-2 text-gray-800">
+              {lang.name}
+            </h2>
+
+            <p className="text-gray-600 text-sm mb-4">
+              {lang.description}
+            </p>
+
+            <button 
+              onClick={() => navigate(`/lessons/${lang.id}`)}
+              className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition"
+            >
+              Lihat Materi
+            </button>
           </div>
         ))}
       </div>
