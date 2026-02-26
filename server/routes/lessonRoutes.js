@@ -15,7 +15,7 @@ router.get("/language/:languageId", async (req, res) => {
     res.json(lessons);
   } catch (err) {
     res.status(500).json({ message: err.message });
-  }
+  } 
 });
 
 // POST lesson (admin only) - using authorize middleware
