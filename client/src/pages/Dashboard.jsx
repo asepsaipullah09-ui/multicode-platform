@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, animate } from "framer-motion";
 import API from "../services/api";
 
 function Dashboard() {
@@ -11,7 +11,29 @@ function Dashboard() {
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
+  const [stats, setStats] = useState({
+    totalLanguages: 0,
+    totalUsers: 0
+  });
   const navigate = useNavigate();
+
+  // Counter component for animated numbers
+  const Counter = ({ value }) => {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+      const controls = animate(0, value, {
+        duration: 1,
+        onUpdate(latest) {
+          setCount(Math.floor(latest));
+        }
+      });
+
+      return () => controls.stop();
+    }, [value]);
+
+    return <span>{count}</span>;
+  };
 
   useEffect(() => {
     if (darkMode) {
@@ -33,6 +55,15 @@ function Dashboard() {
       }
     };
 
+    const fetchStats = async () => {
+      try {
+        const res = await API.get("/stats");
+        setStats(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     // Get user from localStorage
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -40,6 +71,7 @@ function Dashboard() {
     }
 
     fetchLanguages();
+    fetchStats();
   }, []);
 
   const handleAddLanguage = async (e) => {
@@ -88,6 +120,32 @@ function Dashboard() {
       <p className="text-gray-600 dark:text-gray-300 mb-4">
         Logged in as: <strong>{user?.name}</strong> ({user?.role})
       </p>
+
+      {/* Stats Cards */}
+      <motion.div
+        className="grid md:grid-cols-2 gap-6 mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md">
+          <h3 className="text-gray-500 dark:text-gray-300 text-sm mb-2">
+            Total Languages
+          </h3>
+          <p className="text-3xl font-bold text-gray-800 dark:text-white">
+            <Counter value={stats.totalLanguages} />
+          </p>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md">
+          <h3 className="text-gray-500 dark:text-gray-300 text-sm mb-2">
+            Total Users
+          </h3>
+          <p className="text-3xl font-bold text-gray-800 dark:text-white">
+            <Counter value={stats.totalUsers} />
+          </p>
+        </div>
+      </motion.div>
 
       <h2 className="text-xl font-semibold mb-6 dark:text-white">
         Daftar Bahasa Pemrograman
