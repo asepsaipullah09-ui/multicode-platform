@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const prisma = require("../prisma");
-const protect = require("../middleware/authMiddleware");
-const adminOnly = require("../middleware/adminMiddleware");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 // GET all languages (protected)
 router.get("/", protect, async (req, res) => {
@@ -14,8 +13,8 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
-// POST language (admin only)
-router.post("/", protect, adminOnly, async (req, res) => {
+// POST language (admin only) - using authorize middleware
+router.post("/", protect, authorize("ADMIN"), async (req, res) => {
   try {
     const language = await prisma.language.create({
       data: {

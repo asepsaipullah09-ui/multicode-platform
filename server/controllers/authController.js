@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 // REGISTER
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     const userExist = await prisma.user.findUnique({
       where: { email }
@@ -17,11 +17,16 @@ exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Only allow ADMIN/INSTRUCTOR/STUDENT roles, default to STUDENT
+    const validRoles = ["ADMIN", "INSTRUCTOR", "STUDENT"];
+    const userRole = validRoles.includes(role) ? role : "STUDENT";
+
     const user = await prisma.user.create({
       data: {
         name,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        role: userRole
       }
     });
 

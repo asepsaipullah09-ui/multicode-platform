@@ -29,4 +29,20 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = protect;
+// Role-based authorization middleware
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authorized, no token" });
+    }
+    
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: "Forbidden: Access denied"
+      });
+    }
+    next();
+  };
+};
+
+module.exports = { protect, authorize };
