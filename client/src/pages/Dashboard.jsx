@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import API from "../services/api";
 
 function Dashboard() {
@@ -56,7 +57,12 @@ function Dashboard() {
   const isAdmin = user?.role === "ADMIN";
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-10 transition-colors duration-300">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="min-h-screen bg-gray-100 dark:bg-gray-900 p-10 transition-colors duration-300"
+    >
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold dark:text-white">Dashboard</h1>
         
@@ -87,10 +93,27 @@ function Dashboard() {
         Daftar Bahasa Pemrograman
       </h2>
 
-      <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
+      <motion.div
+        className="grid md:grid-cols-3 sm:grid-cols-2 gap-6"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.15
+            }
+          }
+        }}
+      >
         {languages.map((lang) => (
-          <div
+          <motion.div
             key={lang.id}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ duration: 0.4 }}
             className="bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
           >
             <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
@@ -107,9 +130,9 @@ function Dashboard() {
             >
               Lihat Materi
             </button>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Add Language Modal */}
       {showAddForm && (
@@ -150,7 +173,7 @@ function Dashboard() {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
