@@ -4,8 +4,8 @@ const prisma = require("../prisma");
 const protect = require("../middleware/authMiddleware");
 const adminOnly = require("../middleware/adminMiddleware");
 
-// GET all languages
-router.get("/", async (req, res) => {
+// GET all languages (protected)
+router.get("/", protect, async (req, res) => {
   try {
     const languages = await prisma.language.findMany();
     res.json(languages);

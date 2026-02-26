@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../services/api";
 
 function Dashboard() {
   const [languages, setLanguages] = useState([]);
@@ -9,7 +9,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/languages");
+        const res = await API.get("/languages");
         setLanguages(res.data);
       } catch (error) {
         console.error(error);
