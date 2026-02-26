@@ -1,6 +1,15 @@
-const mongoose = require("mongoose");
-const Language = require("./models/Language");
+const { PrismaClient } = require("@prisma/client");
+const { PrismaPg } = require("@prisma/adapter-pg");
+const pg = require("pg");
+const bcrypt = require("bcryptjs");
 require("dotenv").config();
+
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL
+});
+
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 const languages = [
   { name: "Python", description: "A high-level programming language known for its readability and versatility." },
@@ -13,19 +22,45 @@ const languages = [
   { name: "Rust", description: "A systems programming language that focuses on safety and performance." },
 ];
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(async () => {
-    console.log("Connected to MongoDB");
-    
-    // Clear existing data
-    await Language.deleteMany({});
-    console.log("Cleared existing languages");
+async function main() {
+  console.log("Seeding database...");
+  
+  try {
+    // Clear existing data (ignore if tables don't exist)
+    await prisma.language.deleteMany().catch(() => {});
+    await prisma.user.deleteMany().catch(() => {});
+    console.log("Cleared existing data");
     
     // Insert new data
-    const result = await Language.insertMany(languages);
-    console.log(`Seeded ${result.length} languages`);
+    for (const lang of languages) {
+      await prisma.language.create({
+        data: lang
+      });
+    }
     
-    mongoose.disconnect();
+    console.log(`Seeded ${languages.length} languages`);
+  } catch (e) {
+    console.log("Could not seed languages:", e.message);
+  }
+  
+  // Create test user
+  const hashedPassword = await bcrypt.hash("123456", 10);
+  
+  await prisma.user.create({
+    data: {
+      name: "Asep",
+      email: "asep@email.com",
+      password: hashedPassword,
+      role: "ADMIN"
+    }
+  });
+  
+  console.log("User created!");
+}
+
+main()
+  .catch(e => console.error(e))
+  .finally(async () => {
+    await prisma.$disconnect();
     console.log("Done!");
-  })
-  .catch(err => console.log(err));
+  });

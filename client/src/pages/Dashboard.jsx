@@ -30,8 +30,8 @@ function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {languages.map((lang) => (
           <div
-            key={lang._id}
-            onClick={() => navigate(`/lessons/${lang._id}`)}
+            key={lang.id}
+            onClick={() => navigate(`/lessons/${lang.id}`)}
             className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition cursor-pointer"
           >
             <h3 className="text-lg font-bold mb-2">{lang.name}</h3>

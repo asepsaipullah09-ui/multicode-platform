@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const Lesson = require("../models/Lesson");
+const prisma = require("../prisma");
 const protect = require("../middleware/authMiddleware");
 const adminOnly = require("../middleware/adminMiddleware");
 
-// ✅ GET lesson berdasarkan language
+// GET lesson berdasarkan language
 router.get("/language/:languageId", async (req, res) => {
   try {
-    const lessons = await Lesson.find({
-      language: req.params.languageId,
+    const lessons = await prisma.lesson.findMany({
+      where: {
+        languageId: req.params.languageId,
+      },
     });
 
     res.json(lessons);
@@ -17,26 +19,30 @@ router.get("/language/:languageId", async (req, res) => {
   }
 });
 
-// ✅ POST lesson
+// POST lesson
 router.post("/", protect, adminOnly, async (req, res) => {
   try {
-    const lesson = new Lesson({
-      title: req.body.title,
-      content: req.body.content,
-      language: req.body.language,
+    const lesson = await prisma.lesson.create({
+      data: {
+        title: req.body.title,
+        content: req.body.content,
+        languageId: req.body.language,
+        userId: req.user.id,
+      },
     });
 
-    const saved = await lesson.save();
-    res.status(201).json(saved);
+    res.status(201).json(lesson);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// ✅ GET single lesson by ID
+// GET single lesson by ID
 router.get("/:id", async (req, res) => {
   try {
-    const lesson = await Lesson.findById(req.params.id);
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: req.params.id },
+    });
     res.json(lesson);
   } catch (err) {
     res.status(500).json({ message: err.message });
